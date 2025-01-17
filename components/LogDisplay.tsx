@@ -1,21 +1,41 @@
 "use client";
 
+import { Button } from "./ui/button";
 import { EspressoLog } from "../types";
 
-const LogDisplay: React.FC<{ logs: EspressoLog[] }> = ({ logs }) => {
+const LogDisplay: React.FC<{ logs: EspressoLog[]; onLog: () => void }> = ({
+  logs,
+  onLog,
+}) => {
   const sortedLogs = logs.sort((a, b) => {
     const dateA = new Date(a.timestamp);
     const dateB = new Date(b.timestamp);
     return dateB.getTime() - dateA.getTime();
   });
 
+  const handleDelete = (id: number) => {
+    const updatedLogs = logs.filter((log) => log.id !== id);
+    localStorage.setItem("espressoLogs", JSON.stringify(updatedLogs));
+    onLog();
+  };
+
   return (
     <div className="w-full max-w-md mx-auto mt-8">
-      <h2 className="text-lg font-bold">Logs</h2>
+      <h2 className="text-lg font-bold mb-4">Logs</h2>
       <ul className="space-y-4">
         {sortedLogs.map((log) => (
           <li key={log.id} className="border p-4 rounded-md">
-            <p>{new Date(log.timestamp).toLocaleString()}</p>
+            <div className="flex items-center justify-between mb-4">
+              <p>
+                <strong>{new Date(log.timestamp).toLocaleString()}</strong>
+              </p>
+              <Button
+                onClick={() => handleDelete(log.id)}
+                variant={"destructive"}
+              >
+                Delete
+              </Button>
+            </div>
             <p>
               <strong>Grind Size:</strong> {log.grindSize}
             </p>

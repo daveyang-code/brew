@@ -36,7 +36,7 @@ export default function Home() {
   };
 
   const handleSelectChange = (value: string) => {
-    setSelectedBeanId(value ? Number(value) : null);  // If the value is empty, set selectedBeanId to null
+    setSelectedBeanId(value ? Number(value) : null); // If the value is empty, set selectedBeanId to null
   };
 
   const filteredLogs = logs.filter((log) => log.beanId === selectedBeanId);
@@ -48,12 +48,17 @@ export default function Home() {
 
       {coffeeBeans.length > 0 && (
         <div className="flex items-center justify-center mt-8">
-          <Select value={selectedBeanId?.toString()} onValueChange={handleSelectChange}>
+          <Select
+            value={selectedBeanId?.toString()}
+            onValueChange={handleSelectChange}
+          >
             <SelectTrigger className="w-full max-w-md p-2 border rounded-md">
               <SelectValue placeholder="Select a Coffee Bean" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="null" disabled>Select a Coffee Bean</SelectItem>
+              <SelectItem value="null" disabled>
+                Select a Coffee Bean
+              </SelectItem>
 
               {coffeeBeans.map((bean) => (
                 <SelectItem key={bean.id} value={bean.id.toString()}>
@@ -67,7 +72,9 @@ export default function Home() {
       {selectedBeanId && selectedBeanId > 0 && (
         <>
           <LogBrew beanId={selectedBeanId} onLog={handleRefresh} />
-          <LogDisplay logs={filteredLogs} />
+          {logs && logs.length > 0 && (
+            <LogDisplay logs={filteredLogs} onLog={handleRefresh} />
+          )}
         </>
       )}
     </div>
